@@ -145,9 +145,17 @@ function MainApp(props) {
     setOpen(!Open)
   }
 
-  function updateTotal(total) {
+  function updateTotal(total,paid=null) {
     let temp = { ...submitOptions }
     temp.total = total
+    if (paid){
+      temp.paid = paid
+    }
+    setSubmitOptions(temp)
+  }
+  function updatePaid(total) {
+    let temp = { ...submitOptions }
+    temp.paid = total
     setSubmitOptions(temp)
   }
 
@@ -205,8 +213,8 @@ function MainApp(props) {
     }
 
     let tot = calculateTotal(temp)
-    updateTotal(tot)
-
+    updateTotal(tot,tot)
+    //updatePaid(tot);
     setProducts(temp)
   }
 
@@ -266,7 +274,10 @@ function MainApp(props) {
 
     let resp = await postReq('order',body);
     if (resp){
-      console.log('success');
+      addToast("Commande Confirmé", {
+        appearance: "success",
+        autoDismiss: true,
+      });
     }
   }
 

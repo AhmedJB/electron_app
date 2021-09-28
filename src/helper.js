@@ -1,4 +1,30 @@
-const api = 'http://127.0.0.1:8000/api/'
+//const api = 'http://127.0.0.1:8000/api/'
+const { app } = window.require('@electron/remote')
+var fs = window.require('fs'),
+   p = window.require('path'),    
+    filePath = p.join(__dirname, 'config.json');
+
+    const path = app.getAppPath() + '/config.json'
+
+
+
+/* fs.readFile(path, {encoding: 'utf-8'}, function(err,data){
+    if (!err) {
+        console.log('received data: ' + data);
+        //let d = data;
+        api = data.api_base
+    } else {
+        console.log(err);
+    }
+}); */
+
+let data = fs.readFileSync(path,{encoding: 'utf-8'});
+console.log(data);
+console.log(typeof(data));
+let api = JSON.parse(data).api_base;
+
+//const data = require(path+'/config.json');
+
 
 function set_header(token = null){
     try {
@@ -197,6 +223,7 @@ export async function postReq(url,body){
 
 
 export async function req(url){
+    console.log("api here :" ,api);
     let access = sessionStorage.getItem('accessToken');
     let headers = set_header(access);
 
