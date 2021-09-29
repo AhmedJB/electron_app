@@ -111,7 +111,7 @@ function MainApp(props) {
     t.value = val.split(' ')[0].replace(',', '.') + ' DH'
   }
 
-  function formatField(e) {
+  async function formatField(e) {
     let t = e.target
 
     let val = ''
@@ -120,20 +120,34 @@ function MainApp(props) {
     } else {
       val = t.value
     }
-
-    t.value = val
+    let p_id  = t.attributes.datapid.value
+    let pr = await req('getproduct/' + String(p_id));
+    let q = pr.quantity >= Number(val) ?  Number(val) : pr.quantity;
+    t.value = q
   }
 
-  function handleChange(e) {
+  async function handleChange(e) {
     let t = e.target
+    
+    
     let key = t.name
     let id = Number(t.attributes.dataid.value)
+    let p_id  = t.attributes.datapid.value
     let index = getProd(id)
-    console.log(index)
+    //console.log(index)
     let copy = [...products]
-    console.log(copy)
+    //console.log(copy)
     let temp = copy[index]
-    temp[key] = Number(t.value)
+    if (key == 'quantity'){
+      //console.log(pr);
+      let pr = await req('getproduct/' + String(p_id));
+      let q = pr.quantity >= Number(t.value) ?  Number(t.value) : pr.quantity;
+      //console.log('quantity',q);
+      temp[key] = q;
+    }else{
+      temp[key] = Number(t.value);
+    }
+    console.log(temp);
     copy[index] = temp
     let tot = calculateTotal(copy);
     updateTotal(tot,tot);
@@ -313,7 +327,7 @@ function MainApp(props) {
 
   const DataTable = (
     <Fragment>
-      <div className="table-container">
+      
         <div id="table-wrapper">
           <table id="status-table">
             <tbody>
@@ -347,6 +361,8 @@ function MainApp(props) {
                         onBlur={formatField}
                         datavalue={e.quantity}
                         dataid={e.id}
+                        datapid={e.p_id}
+                        //value={e.quantity}
                         defaultValue={e.quantity}
                       ></input>
                     </td>
@@ -358,6 +374,7 @@ function MainApp(props) {
                         onChange={handleChange}
                         datavalue={e.price_vente}
                         dataid={e.id}
+                        datapid={e.p_id}
                         onBlur={formatPrice}
                         defaultValue={e.price_vente + ' DH'}
                       ></input>
@@ -375,7 +392,7 @@ function MainApp(props) {
         {/* <div className="submit-container">
           
         </div> */}
-      </div>
+      
     </Fragment>
   )
 
@@ -451,6 +468,7 @@ function MainApp(props) {
 
       <section onKeyDown={handleBarcode} tabIndex="0" className="card Supplier">
         <h1 className="card-title text-center">Vente</h1>
+        <div className='global-container'>
         <div className="filtre-row">
           <div className="filtre-group">
             <CustomSelect
@@ -462,6 +480,7 @@ function MainApp(props) {
               placeholder="Choisir un Client"
             />
           </div>
+          
 
           <button
             class="btn-main"
@@ -474,6 +493,7 @@ function MainApp(props) {
         </div>
 
         {products.length == 0 ? NotFound : DataTable}
+        </div>
       </section>
     </Fragment>
   )
