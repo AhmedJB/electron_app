@@ -81,6 +81,12 @@ function MainApp(props) {
 
   async function updateClients() {
     let supResp = await req('getclients')
+    for(let i =0; i < supResp.length; i++){
+      if (supResp[i].name.toLowerCase().trim() == "comptoir"){
+        setSelected(supResp[i]);
+        break;
+      }
+    }
     setClients(supResp)
     return true
   }
@@ -129,6 +135,8 @@ function MainApp(props) {
     let temp = copy[index]
     temp[key] = Number(t.value)
     copy[index] = temp
+    let tot = calculateTotal(copy);
+    updateTotal(tot,tot);
     setProducts(copy)
   }
 
@@ -182,9 +190,9 @@ function MainApp(props) {
           resp.quantity = temp2.quantity + 1
         }
         
-
-        temp.splice(index, 1)
         console.log(temp)
+        temp.splice(index, 1)
+        
         temp.push(resp)
         let t = document.getElementById(String(resp.id))
         t.value = resp.quantity
@@ -278,6 +286,14 @@ function MainApp(props) {
         appearance: "success",
         autoDismiss: true,
       });
+      setSubmitOptions({
+        total: 0,
+        paid: 0,
+        modePayment: 0
+      });
+      //setSelected(null);
+      setProducts([]);
+      setConfOpen(!confOpen);
     }
   }
 
@@ -305,7 +321,15 @@ function MainApp(props) {
                 <th className="date">Nom du Produit</th>
                 <th classname="task-title">Quantite</th>
                 <th classname="tel">Prix</th>
-                <th></th>
+                <th id="trash-head"><button
+            id="submit"
+            onClick={() => {
+              setConfOpen(!confOpen)
+            }}
+            className="modalSubmit"
+          >
+            Confirmer
+          </button></th>
               </tr>
 
               {products.map(e => {
@@ -338,7 +362,7 @@ function MainApp(props) {
                         defaultValue={e.price_vente + ' DH'}
                       ></input>
                     </td>
-                    <td onClick={() => handleDel(e.id)}>
+                    <td id="trash-head" onClick={() => handleDel(e.id)}>
                       <FontAwesomeIcon icon={faTrashAlt} className="trash" />
                     </td>
                   </tr>
@@ -348,17 +372,9 @@ function MainApp(props) {
           </table>
         </div>
 
-        <div className="submit-container">
-          <button
-            id="submit"
-            onClick={() => {
-              setConfOpen(!confOpen)
-            }}
-            className="modalSubmit"
-          >
-            Confirmer
-          </button>
-        </div>
+        {/* <div className="submit-container">
+          
+        </div> */}
       </div>
     </Fragment>
   )
@@ -440,6 +456,7 @@ function MainApp(props) {
             <CustomSelect
               options={Clients}
               changeFunc={selectClient}
+              values = {selected ? [selected] : null}
               label="name"
               fvalue="id"
               placeholder="Choisir un Client"
