@@ -1,4 +1,4 @@
-//const api = 'http://127.0.0.1:8000/api/'
+/* //const api = 'http://127.0.0.1:8000/api/'
 const { app } = window.require('@electron/remote')
 var fs = window.require('fs'),
    p = window.require('path'),    
@@ -16,12 +16,13 @@ var fs = window.require('fs'),
     } else {
         console.log(err);
     }
-}); */
+}); 
 
 let data = fs.readFileSync(path,{encoding: 'utf-8'});
 console.log(data);
 console.log(typeof(data));
-let api = JSON.parse(data).api_base;
+let api = JSON.parse(data).api_base; */
+let  api = "http://127.0.0.1:8000/api/"
 
 //const data = require(path+'/config.json');
 
