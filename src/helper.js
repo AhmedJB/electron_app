@@ -22,7 +22,8 @@ let data = fs.readFileSync(path,{encoding: 'utf-8'});
 console.log(data);
 console.log(typeof(data));
 let api = JSON.parse(data).api_base; */
-let  api = "http://127.0.0.1:8000/api/"
+//let  api = "http://127.0.0.1:8000/api/"
+let api = "http://85.31.236.214:8080/gestionapp/api/"
 
 //const data = require(path+'/config.json');
 
